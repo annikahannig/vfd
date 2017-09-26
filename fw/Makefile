@@ -14,13 +14,17 @@ CFLAGS+= -Wall -Wno-pointer-to-int-cast
 
 LDFLAGS = -Wl,-u,vfprintf -lprintf_flt
 
+BAUDRATE=57600
+
+# BAUDRATE=115200
+
 
 # OS Detection
 UNAME=$(shell uname)
 ifeq ($(UNAME), Darwin)
   PROG_PRT=cu.usbmodem1411
 else
-  PROG_PRT=ttyUSB1
+  PROG_PRT=ttyUSB0
 endif
 
 all: main.elf
@@ -36,7 +40,7 @@ main.elf: uart.o main.o
 	avr-objcopy  -O ihex -R .eeprom main.elf main.hex
 
 flash:	main.elf
-	sudo avrdude -c arduino -P /dev/$(PROG_PRT) -b 115200 -p $(DEVICE) -U flash:w:main.hex
+	sudo avrdude -c arduino -P /dev/$(PROG_PRT) -b $(BAUDRATE) -p $(DEVICE) -U flash:w:main.hex
 
 
 
